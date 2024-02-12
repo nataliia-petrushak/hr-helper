@@ -130,7 +130,10 @@ class BotSession:
 
     def start_button(self, message):
         """Send start button."""
-
+        self.all_user_answers = {}
+        self.user_answer = {}
+        self.salary = ""
+        self.candidates = None
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("Start Search", callback_data="Start_search"))
         self.bot.send_message(
