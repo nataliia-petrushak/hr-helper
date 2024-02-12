@@ -88,7 +88,7 @@ class CandidateScraper:
 
     async def get_candidates_from_one_page(
         self, session, soup: BeautifulSoup
-    ) -> [Candidate]:
+    ) -> list[Candidate]:
         """Get candidates from one page.
         Args:
             session: The aiohttp ClientSession object.
@@ -104,7 +104,7 @@ class CandidateScraper:
 
         return await asyncio.gather(*tasks)
 
-    async def get_all_candidates(self) -> [Candidate]:
+    async def get_all_candidates(self) -> list[Candidate]:
         """Get all candidates from all pages.
         Returns:
             [Candidate]: A list of Candidate objects.
@@ -129,7 +129,7 @@ class CandidateScraper:
 
         return all_candidates
 
-    async def sort_candidates(self) -> [Candidate]:
+    async def sort_candidates(self) -> list[Candidate]:
         """Sort candidates based on their ratings.
         Returns:
             [Candidate]: A list of Candidate objects sorted by ratings.
@@ -150,7 +150,7 @@ class CandidateScraper:
         return sorted(ratings, key=ratings.get, reverse=True)
 
     @staticmethod
-    def write_data_to_csv(data: [Candidate], doc_name: str) -> None:
+    def write_data_to_csv(data: list[Candidate], doc_name: str) -> None:
         """Write candidate data to a CSV file.
         Args:
             data ([Candidate]): A list of Candidate objects.

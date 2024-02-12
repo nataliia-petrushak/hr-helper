@@ -6,7 +6,7 @@ def filter_employees_without_salary(
     position: str | None,
     location: str | None,
     skills: str | None,
-):
+) -> CandidatesParser:
     employees = CandidatesParser()
     if position:
         employees.get_employees_by_job_position(position)
@@ -17,20 +17,24 @@ def filter_employees_without_salary(
     return employees
 
 
-def get_available_candidates_experience(parsed_candidates: CandidatesParser):
+def get_available_candidates_experience(
+        parsed_candidates: CandidatesParser
+) -> list[str]:
     parsed_candidates.driver.get(parsed_candidates.BASE_URL)
     experience = parsed_candidates.get_options_from_checkbox()
     return experience
 
 
-def filter_candidates_by_experience(parsed_candidates: CandidatesParser, value: str):
+def filter_candidates_by_experience(
+        parsed_candidates: CandidatesParser, value: str
+) -> CandidatesParser:
     parsed_candidates.get_employees_by_years_of_experience(value)
     return parsed_candidates
 
 
 def get_available_salary_expectations(
     parsed_candidates: CandidatesParser, max_salary: bool = False
-) -> [str]:
+) -> list[str]:
     parsed_candidates.driver.get(parsed_candidates.BASE_URL)
     salary_expectations = parsed_candidates.get_options_from_select_list()
     if max_salary:
@@ -39,7 +43,9 @@ def get_available_salary_expectations(
 
 
 def filter_candidates_by_salary_expectations(
-    parsed_candidates: CandidatesParser, value: str, max_salary: bool = False
+        parsed_candidates: CandidatesParser,
+        value: str,
+        max_salary: bool = False
 ) -> CandidatesParser:
     parsed_candidates.driver.get(parsed_candidates.BASE_URL)
 
@@ -53,7 +59,7 @@ def filter_candidates_by_salary_expectations(
 
 async def scrap_all_candidates(
     candidates: CandidatesParser, doc_name: str = "candidates.csv"
-):
+) -> None:
     """
     Scrapes all candidates' data and writes it to a CSV file.
     Args:

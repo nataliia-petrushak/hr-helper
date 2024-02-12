@@ -26,7 +26,7 @@ class ParseHelper:
                 expected_conditions.element_to_be_clickable(locator)
             )
             element.click()
-        except (TimeoutException, Exception) as e:
+        except TimeoutException as e:
             logging.exception(f"An error occurred: {str(e)}")
 
     def wait_and_send_keys(self, locator: tuple, keys: str) -> None:
@@ -65,7 +65,7 @@ class ParseHelper:
                 if "disabled" not in classes:
                     result.append(element.find_element(By.TAG_NAME, "span").text)
             return result
-        except (NoSuchElementException, Exception) as e:
+        except NoSuchElementException as e:
             logging.exception(f"An error occurred while getting options: {str(e)}")
             return []
 
@@ -80,6 +80,6 @@ class ParseHelper:
 
             select = Select(element)
             return [option.text for option in select.options]
-        except (NoSuchElementException, Exception) as e:
+        except NoSuchElementException as e:
             logging.exception(f"An error occurred while getting options: {str(e)}")
             return []

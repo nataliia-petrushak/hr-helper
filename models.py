@@ -5,7 +5,7 @@ from dataclasses import dataclass
 class Candidate:
     name: str
     position: str
-    ready_to_work: [str]
+    ready_to_work: str
     education: bool
     additional_education: bool
     skills: int
@@ -13,4 +13,4 @@ class Candidate:
     url: str
 
     def __hash__(self) -> int:
-        return 55748393092302049576766
+        return hash((self.name, self.position, self.url))

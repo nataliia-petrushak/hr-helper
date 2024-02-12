@@ -1,5 +1,4 @@
 import asyncio
-import logging
 import os
 
 import telebot
@@ -48,49 +47,48 @@ class BotSession:
         }
         setup_logging()
 
-    def start(self):
+    def start(self) -> None:
         self.register_handlers()
         self.bot.polling()
 
-    def register_handlers(self):
+    def register_handlers(self) -> None:
         """Register message and callback query handlers."""
 
         @self.bot.message_handler(commands=["start"], content_types=["text"])
-        def handle_message_responses(message):
+        def handle_message_responses(message) -> None:
             """Handle message responses."""
 
             self.send_welcome(message)
 
         @self.bot.callback_query_handler(func=lambda call: True)
-        def handle_callback_query(call):
+        def handle_callback_query(call) -> None:
             """Handle callback queries."""
 
-            try:
-                if call.data == "Start_search":
-                    self.position_question(call.message)
-                elif call.data in ["location", "skills", "continue"]:
-                    self.select_filters_handler(call)
-                elif call.data in ["experience_yes", "experience_no"]:
-                    self.experience_question_handler(call)
-                elif call.data in ["salary_yes", "salary_no"]:
-                    self.salary_question_handler(call)
-                elif call.data in [
-                    "без досвіду",
-                    "до 1 року",
-                    "від 1 до 2 років",
-                    "від 2 до 5 років",
-                    "понад 5 років",
-                ]:
-                    self.filter_by_experience(call)
-                elif self.count == 2:
-                    self.filter_by_salary(call)
-                else:
-                    self.salary_handler(call)
-            except Exception as e:
-                logging.exception(f"Error occurred: {str(e)}")
+            if call.data == "Start_search":
+                self.position_question(call.message)
+            elif call.data in ["location", "skills", "continue"]:
+                self.select_filters_handler(call)
+            elif call.data in ["experience_yes", "experience_no"]:
+                self.experience_question_handler(call)
+            elif call.data in ["salary_yes", "salary_no"]:
+                self.salary_question_handler(call)
+            elif call.data in [
+                "без досвіду",
+                "до 1 року",
+                "від 1 до 2 років",
+                "від 2 до 5 років",
+                "понад 5 років",
+            ]:
+                self.filter_by_experience(call)
+            elif self.count == 2:
+                self.filter_by_salary(call)
+            else:
+                self.salary_handler(call)
 
     @staticmethod
-    def generate_markup(button_names, call_data=None):
+    def generate_markup(
+            button_names: list[str], call_data: list[str] = None
+    ) -> InlineKeyboardMarkup:
         """Generate inline keyboard markup."""
 
         buttons = []
@@ -101,8 +99,12 @@ class BotSession:
         return markup
 
     def send_options(
-        self, button_names: [str], message_key: str, message, call_data: [str] = None
-    ):
+            self,
+            button_names: [str],
+            message_key: str,
+            message,
+            call_data: [str] = None
+    ) -> None:
         """Send options with inline keyboard markup."""
 
         markup = self.generate_markup(button_names, call_data)
@@ -112,14 +114,14 @@ class BotSession:
             reply_markup=markup,
         )
 
-    def update_user_answer(self, message):
+    def update_user_answer(self, message) -> None:
         """Update user answer."""
 
         if "current_filter" in self.user_answer:
             key = self.user_answer["current_filter"]
             self.all_user_answers[key] = message.text
 
-    def send_welcome(self, message):
+    def send_welcome(self, message) -> None:
         """Send welcome message."""
 
         self.bot.send_message(
@@ -128,7 +130,7 @@ class BotSession:
         )
         self.start_button(message)
 
-    def start_button(self, message):
+    def start_button(self, message) -> None:
         """Send start button."""
         self.all_user_answers = {}
         self.user_answer = {}
@@ -140,26 +142,26 @@ class BotSession:
             message.chat.id, self.messages["Start"], reply_markup=markup
         )
 
-    def position_question(self, message):
+    def position_question(self, message) -> None:
         """Ask position question."""
 
         self.bot.send_message(message.chat.id, self.messages["position"])
         self.bot.register_next_step_handler(message, self.position_handler)
 
-    def position_handler(self, message):
+    def position_handler(self, message) -> None:
         """Handle position response."""
 
         self.all_user_answers["position"] = message.text
         self.select_filters(message)
 
-    def select_filters(self, message):
+    def select_filters(self, message) -> None:
         """Select filters."""
 
         button_names = ["Location", "Skills", "Continue"]
         self.update_user_answer(message)
         self.send_options(button_names, "Filter", message)
 
-    def select_filters_handler(self, call):
+    def select_filters_handler(self, call) -> None:
         """Handle the selection of filters."""
 
         if call.data in ["location", "skills"]:
@@ -172,7 +174,7 @@ class BotSession:
         elif call.data == "continue":
             self.continue_with_selected_filters(call.message)
 
-    def continue_with_selected_filters(self, message):
+    def continue_with_selected_filters(self, message) -> None:
         """Continue with the selected filters."""
 
         self.bot.send_message(message.chat.id, self.messages["Waiting"])
@@ -183,7 +185,7 @@ class BotSession:
         self.candidates = filter_employees_without_salary(position, location, skills)
         self.experience_question(message)
 
-    def experience_question(self, message):
+    def experience_question(self, message) -> None:
         """Ask about the candidate's experience."""
 
         self.send_options(
@@ -193,7 +195,7 @@ class BotSession:
             ["experience_yes", "experience_no"],
         )
 
-    def experience_question_handler(self, call):
+    def experience_question_handler(self, call) -> None:
         """Handle the response to the experience question."""
 
         if call.data == "experience_yes":
@@ -204,7 +206,7 @@ class BotSession:
         elif call.data == "experience_no":
             self.salary_question(call)
 
-    def filter_by_experience(self, call):
+    def filter_by_experience(self, call) -> None:
         """Filter candidates based on experience."""
 
         self.bot.send_message(
@@ -214,14 +216,14 @@ class BotSession:
         self.candidates = filter_candidates_by_experience(self.candidates, call.data)
         self.salary_question(call)
 
-    def salary_question(self, call):
+    def salary_question(self, call) -> None:
         """Ask about salary expectation."""
 
         self.send_options(
             ["Yes", "No"], "Salary_question", call.message, ["salary_yes", "salary_no"]
         )
 
-    def salary_question_handler(self, call):
+    def salary_question_handler(self, call) -> None:
         """Handle the response to the salary question."""
 
         if call.data == "salary_yes":
@@ -229,7 +231,7 @@ class BotSession:
         elif call.data == "salary_no":
             self.get_candidate_list(call.message)
 
-    def salary_handler(self, call):
+    def salary_handler(self, call) -> None:
         """Handle salary input."""
 
         salary = get_available_salary_expectations(self.candidates)
@@ -245,7 +247,7 @@ class BotSession:
         self.send_options(salary, message_key, call.message)
         self.count += 1
 
-    def filter_by_salary(self, call):
+    def filter_by_salary(self, call) -> None:
         """Filter candidates by salary."""
 
         self.candidates = filter_candidates_by_salary_expectations(
@@ -254,7 +256,7 @@ class BotSession:
         self.get_candidate_list(call.message)
         self.stop_bot()
 
-    def get_candidate_list(self, message):
+    def get_candidate_list(self, message) -> None:
         """Get the list of candidates."""
 
         self.bot.send_message(message.chat.id, self.messages["Waiting"])
