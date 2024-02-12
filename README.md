@@ -30,8 +30,15 @@ Candidate lists are exported to CSV format using Python's built-in csv module fo
 ### Installation
 
 1. Clone the repository:
-````git clone ````
-2. In root directory build a docker container:
+````git clone https://github.com/nataliia-petrushak/hr-helper.git````
+2. In the root directory build a docker container:
 ````docker build --progress=plain -t telegram-bot .````
 3. Run the container:
 ````docker run --name my-bot-container telegram-bot````
+
+DEMO
+<img width="1143" alt="Screenshot 2024-02-12 at 10 24 12" src="https://github.com/nataliia-petrushak/hr-helper/assets/87134904/1880ce2a-a02e-4b83-a3c9-eb0e9d53fae5"><br><br>
+
+<img width="1139" alt="Screenshot 2024-02-12 at 10 24 54" src="https://github.com/nataliia-petrushak/hr-helper/assets/87134904/29d9af3e-42c7-4b41-ad05-b4631a9c6f0a">
+
+
