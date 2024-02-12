@@ -1,0 +1,6 @@
+.idea/
+.env
+venv/
+candidates.csv
+parser.log
+*__pycache__/
