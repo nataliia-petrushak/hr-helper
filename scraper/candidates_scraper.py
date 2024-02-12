@@ -36,7 +36,7 @@ class CandidateScraper:
 
     async def scrap_one_candidate(
         self, session, soup: BeautifulSoup
-    ) -> Candidate | dict:
+    ) -> Candidate:
         """Scrape data for a single candidate.
         Args:
             session: The aiohttp ClientSession object.
